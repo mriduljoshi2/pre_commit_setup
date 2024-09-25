@@ -1,6 +1,6 @@
 # pre_commit_setup
 
-This super awesome repository includes a setup script for configuring pre-commit hooks using Ruff, a fast Python linter and code formatter.
+This repository includes a setup script for configuring pre-commit hooks using Ruff, a fast Python linter and code formatter.
 
 ## Getting Started
 

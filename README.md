@@ -37,6 +37,7 @@ This helps maintain code quality and consistency across your project.
 If you encounter any issues with the setup or the pre-commit hooks, please check the following:
 
 - Ensure the `ruff_setup.sh` file has execute permissions:
+
    ```bash
    chmod +x ruff_setup.sh
    ```

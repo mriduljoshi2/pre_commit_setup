@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e
 
 # Check if we're in a git repository
@@ -8,20 +7,7 @@ if [ ! -d .git ]; then
     exit 1
 fi
 
-# Create pre-commit file in .git/hooks
-cat > .git/hooks/pre-commit << EOL
-# Run pre-commit
-if command -v pre-commit >/dev/null 2>&1; then
-  exec pre-commit run --hook-stage commit
-else
-  echo "pre-commit not found. Please install it: pip install pre-commit"
-  exit 1
-fi
-EOL
-
-echo "Created .git/hooks/pre-commit file"
-
-# Create .pre-commit-config.yaml
+# Create/overwrite .pre-commit-config.yaml
 cat > .pre-commit-config.yaml << EOL
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -42,82 +28,69 @@ repos:
       - id: ruff-format
         stages: [commit]
 EOL
+echo "Created/updated .pre-commit-config.yaml"
 
-echo "Created .pre-commit-config.yaml"
-
-# Ruff configuration
-RUFF_CONFIG="
-[tool.ruff]
+# Create/overwrite ruff.toml
+cat > ruff.toml << EOL
 # Exclude a variety of commonly ignored directories.
 exclude = [
-    \".bzr\",
-    \".direnv\",
-    \".eggs\",
-    \".git\",
-    \".git-rewrite\",
-    \".hg\",
-    \".ipynb_checkpoints\",
-    \".mypy_cache\",
-    \".nox\",
-    \".pants.d\",
-    \".pyenv\",
-    \".pytest_cache\",
-    \".pytype\",
-    \".ruff_cache\",
-    \".svn\",
-    \".tox\",
-    \".venv\",
-    \".vscode\",
-    \"__pypackages__\",
-    \"_build\",
-    \"buck-out\",
-    \"build\",
-    \"dist\",
-    \"node_modules\",
-    \"site-packages\",
-    \"venv\",
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
 ]
 
-[tool.ruff.lint]
+[lint]
 # I - isort formatting
 # D - checking docstrings
 # F401 - remove unused imports
-select = [\"I\", \"D\", \"F401\"]
+select = ["I", "D", "F401"]
 extend-select = []
-fixable = [\"ALL\"]
+fixable = ["ALL"]
 unfixable = []
-
 # D415 - checking ending punctuation
 # N - pep8-naming
 # PLR0915 - too many statements
 # C901 - cyclomatic complexity
 # ANN - type annotations
 # TCH - type checking
-ignore = [\"D415\", \"N\", \"PLR0915\", \"C901\", \"ANN\", \"TCH\"]
+ignore = ["D415", "N", "PLR0915", "C901", "ANN", "TCH"]
 
-#[tool.ruff.lint.mccabe]
+#[lint.mccabe]
 # Flag errors (C901) whenever the complexity level exceeds 5.
 #max-complexity = 5
 
-#[tool.ruff.lint.pylint]
+#[lint.pylint]
 # setting maximum function length to 30 statements
 #max-statements = 30
 
 # setting docstring convention to google format
-[tool.ruff.lint.pydocstyle]
-convention = \"google\"
-"
-
-# Add Ruff configuration to existing pyproject.toml or create a new one
-if [ -f pyproject.toml ]; then
-    echo "pyproject.toml already exists. Adding Ruff configuration to it."
-    echo "$RUFF_CONFIG" >> pyproject.toml
-else
-    echo "Creating pyproject.toml with Ruff configuration."
-    cat > pyproject.toml << EOL
-$RUFF_CONFIG
+[lint.pydocstyle]
+convention = "google"
 EOL
-fi
+echo "Created/updated ruff.toml"
 
 # Install pre-commit
 echo "Installing pre-commit..."
